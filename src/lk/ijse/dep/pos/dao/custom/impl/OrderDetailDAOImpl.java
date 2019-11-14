@@ -12,6 +12,11 @@ public class OrderDetailDAOImpl implements OrderDetailDAO {
     private Session session;
 
     @Override
+    public void setSession(Session session) {
+        this.setSession(session);
+    }
+
+    @Override
     public List<OrderDetail> findAll() throws Exception {
 
         return  session.createQuery("From OrderDetail",OrderDetail.class).list();

@@ -10,6 +10,11 @@ public class ItemDAOImpl implements ItemDAO {
     private Session session;
 
     @Override
+    public void setSession(Session session) {
+        this.setSession(session);
+    }
+
+    @Override
     public String getLastItemCode() throws Exception {
 
        return (String) session.createNativeQuery("SELECT code FROM Item ORDER BY code DESC LIMIT 1").uniqueResult();
