@@ -1,15 +1,9 @@
 package lk.ijse.dep.pos.dao.custom.impl;
 
-import javafx.beans.binding.ObjectExpression;
-import lk.ijse.dep.pos.dao.CrudUtil;
 import lk.ijse.dep.pos.dao.custom.OrderDAO;
-import lk.ijse.dep.pos.dto.OrderDTO2;
 import lk.ijse.dep.pos.entity.Order;
 import org.hibernate.Session;
 
-import javax.persistence.Id;
-import java.sql.ResultSet;
-import java.util.ArrayList;
 import java.util.List;
 
 public class OrderDAOImpl implements OrderDAO {

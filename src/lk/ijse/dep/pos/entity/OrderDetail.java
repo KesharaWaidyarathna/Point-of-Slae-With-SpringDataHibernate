@@ -58,15 +58,6 @@ public class OrderDetail implements SuperEntity{
         this.unitPrice = unitPrice;
     }
 
-    @Override
-    public String toString() {
-        return "OrderDetail{" +
-                "orderDetailPK=" + orderDetailPK +
-                ", qty=" + qty +
-                ", unitPrice=" + unitPrice +
-                '}';
-    }
-
     public Order getOrder() {
         return order;
     }
@@ -81,5 +72,16 @@ public class OrderDetail implements SuperEntity{
 
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderDetail{" +
+                "orderDetailPK=" + orderDetailPK +
+                ", qty=" + qty +
+                ", unitPrice=" + unitPrice +
+                ", order=" + order +
+                ", item=" + item +
+                '}';
     }
 }

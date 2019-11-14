@@ -98,7 +98,6 @@ public class Customer implements SuperEntity{
         if(order.getCustomer()!=this){
             throw new RuntimeException("invalid customer");
         }
-
         order.setCustomer(null);
         this.orders.remove(order);
     }
