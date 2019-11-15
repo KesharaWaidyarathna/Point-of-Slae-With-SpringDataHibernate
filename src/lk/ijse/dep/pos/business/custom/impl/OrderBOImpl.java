@@ -7,15 +7,13 @@ import lk.ijse.dep.pos.dao.custom.ItemDAO;
 import lk.ijse.dep.pos.dao.custom.OrderDAO;
 import lk.ijse.dep.pos.dao.custom.OrderDetailDAO;
 import lk.ijse.dep.pos.dao.custom.QueryDAO;
+import lk.ijse.dep.pos.db.HibernateUtil;
 import lk.ijse.dep.pos.dto.OrderDTO;
 import lk.ijse.dep.pos.dto.OrderDTO2;
 import lk.ijse.dep.pos.dto.OrderDetailDTO;
-import lk.ijse.dep.pos.entity.CustomEntity;
-import lk.ijse.dep.pos.entity.Item;
-import lk.ijse.dep.pos.entity.Order;
-import lk.ijse.dep.pos.entity.OrderDetail;
+import lk.ijse.dep.pos.entity.*;
+import org.hibernate.Session;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,79 +28,55 @@ public class OrderBOImpl implements OrderBO {
 
     @Override
     public int getLastOrderId() throws Exception {
-        return orderDAO.getLastOrderId();
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            orderDAO.setSession(session);
+            session.beginTransaction();
+            int lastOrderId = orderDAO.getLastOrderId();
+            session.getTransaction().commit();
+            return lastOrderId;
+        }
     }
 
     @Override
-    public boolean placeOrder(OrderDTO order) throws Exception {
-        Connection connection = DBConnection.getInstance().getConnection();
-        try {
+    public void placeOrder(OrderDTO order) throws Exception {
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            orderDAO.setSession(session);
+            itemDAO.setSession(session);
+            orderDetailDAO.setSession(session);
 
-            // Let's start a transaction
-            connection.setAutoCommit(false);
+            session.beginTransaction();
 
             int oId = order.getId();
-            boolean result = orderDAO.save(new Order(oId, new java.sql.Date(new Date().getTime()),
-                    order.getCustomerId()));
-
-            if (!result) {
-                connection.rollback();
-                throw new RuntimeException("Something, something went wrong");
-            }
+            orderDAO.save(new Order(oId, new java.sql.Date(new Date().getTime()), session.get(Customer.class, order.getCustomerId())));
 
             for (OrderDetailDTO orderDetail : order.getOrderDetails()) {
-                result = orderDetailDAO.save(new OrderDetail(oId, orderDetail.getCode(),
+                orderDetailDAO.save(new OrderDetail(oId, orderDetail.getCode(),
                         orderDetail.getQty(), orderDetail.getUnitPrice()));
-
-                if (!result) {
-                    connection.rollback();
-                    throw new RuntimeException("Something, something went wrong");
-                }
 
                 Item item = itemDAO.find(orderDetail.getCode());
                 item.setQtyOnHand(item.getQtyOnHand() - orderDetail.getQty());
-                result = itemDAO.update(item);
+                itemDAO.update(item);
 
-                if (!result) {
-                    connection.rollback();
-                    throw new RuntimeException("Something, something went wrong");
-                }
             }
 
-            connection.commit();
-            return true;
-
-        } catch (Throwable e) {
-
-            try {
-                connection.rollback();
-            } catch (Exception ex) {
-                ex.printStackTrace();
-            }
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                connection.setAutoCommit(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            session.getTransaction().commit();
         }
+
     }
 
     @Override
     public List<OrderDTO2> getOrderInfo(String query) throws Exception {
-        ResultSet rst = CrudUtil.execute("SELECT O.id, C.customerId, C.name, O.date, SUM(OD.qty * OD.unitPrice) AS Total  FROM Customer C INNER JOIN `Order` O ON C.customerId=O.customerId " +
-                "INNER JOIN OrderDetail OD on O.id = OD.orderId WHERE O.id LIKE ? OR C.customerId LIKE ? OR C.name LIKE ? OR O.date LIKE ? GROUP BY O.id", query, query, query, query);
-
-        List<CustomEntity> ordersInfo = queryDAO.getOrdersInfo(query);
-
-        List<OrderDTO2> al = new ArrayList<>();
-
-        for (CustomEntity customEntity : ordersInfo) {
-            al.add(new OrderDTO2(customEntity.getOrderId(),customEntity.getOrderDate(),customEntity.getCustomerId(),customEntity.getCustomerName(),customEntity.getOrderTotal()));
+        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            orderDAO.setSession(session);
+            queryDAO.setSession(session);
+            session.beginTransaction();
+            List<CustomEntity> ordersInfo = queryDAO.getOrdersInfo(query);
+            List<OrderDTO2> al = new ArrayList<>();
+            session.getTransaction().commit();
+            for (CustomEntity customEntity : ordersInfo) {
+                al.add(new OrderDTO2(customEntity.getOrderId(), customEntity.getOrderDate(), customEntity.getCustomerId(), customEntity.getCustomerName(), customEntity.getOrderTotal()));
+            }
+            return al;
         }
-
-        return al;
     }
 }

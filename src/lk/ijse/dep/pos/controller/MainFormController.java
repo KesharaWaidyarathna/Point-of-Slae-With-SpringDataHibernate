@@ -152,7 +152,7 @@ public class MainFormController implements Initializable {
     }
 
     public void btnRestore_OnAction(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();
+       /* FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Let's restore the backup");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQL File", "*.sql"));
         File file = fileChooser.showOpenDialog(this.root.getScene().getWindow());
@@ -177,18 +177,18 @@ public class MainFormController implements Initializable {
                     int exitCode = process.waitFor();
 
                     if(exitCode!=0){
-                     /*   InputStream errStream = process.getErrorStream();
+                     *//*   InputStream errStream = process.getErrorStream();
                         InputStreamReader isr = new InputStreamReader(errStream);
-                        BufferedReader br = new BufferedReader(isr);*/
+                        BufferedReader br = new BufferedReader(isr);*//*
 
                         BufferedReader br = new BufferedReader(new InputStreamReader(process.getErrorStream()));
 
-               /*         String out = "";
+               *//*         String out = "";
                         String line = null;
 
                         while ((line = br.readLine()) != null) {
                             out += line + "\n";
-                        }*/
+                        }*//*
 //                        System.out.println(out);
 
 //                        br.lines().forEach(new Consumer<String>() {
@@ -222,11 +222,11 @@ public class MainFormController implements Initializable {
         });
 
         new Thread(task).start();
-        }
+        }*/
     }
 
     public void btnBackup_OnAction(ActionEvent actionEvent) {
-        FileChooser fileChooser = new FileChooser();
+       /* FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save the DB Backup");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("SQL File", "*.sql"));
         File file = fileChooser.showSaveDialog(this.root.getScene().getWindow());
@@ -265,6 +265,6 @@ public class MainFormController implements Initializable {
 
             new Thread(task).start();
 
-        }
+        }*/
     }
 }

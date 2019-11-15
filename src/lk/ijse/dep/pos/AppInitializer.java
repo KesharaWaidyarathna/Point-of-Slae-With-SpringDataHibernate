@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
+import lk.ijse.dep.pos.db.HibernateUtil;
 
 import java.net.URL;
 import java.util.logging.*;
@@ -15,6 +16,7 @@ public class AppInitializer extends Application {
     public static void main(String[] args)
     {
         launch(args);
+        HibernateUtil.getSessionFactory().close();
     }
 
     @Override
@@ -28,7 +30,6 @@ public class AppInitializer extends Application {
             fileHandler.setLevel(Level.INFO);
             rootLogger.addHandler(fileHandler);
 
-            DBConnection.getInstance().getConnection();
             URL resource = this.getClass().getResource("/lk/ijse/dep/pos/view/MainForm.fxml");
             Parent root = FXMLLoader.load(resource);
             Scene mainScene = new Scene(root);
