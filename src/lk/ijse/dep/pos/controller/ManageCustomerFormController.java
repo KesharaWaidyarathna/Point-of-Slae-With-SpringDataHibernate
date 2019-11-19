@@ -9,6 +9,7 @@ import lk.ijse.dep.pos.business.BOFactory;
 import lk.ijse.dep.pos.business.BOTypes;
 import lk.ijse.dep.pos.business.custom.CustomerBO;
 import lk.ijse.dep.pos.business.exception.AlreadyExistsInOrderException;
+import lk.ijse.dep.pos.db.HibernateUtil;
 import lk.ijse.dep.pos.dto.CustomerDTO;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,9 +28,11 @@ import javafx.stage.Stage;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
 import lk.ijse.dep.pos.util.CustomerTM;
+import org.hibernate.Session;
 
 import java.io.IOException;
 import java.net.URL;
@@ -109,17 +112,18 @@ public class ManageCustomerFormController implements Initializable {
     }
 
     public void btnReport_OnAction(ActionEvent actionEvent) throws JRException {
-        JasperDesign jasperDesign = JRXmlLoader.
-                load(this.getClass().
-                        getResourceAsStream("/lk/ijse/dep/pos/report/bean-report.jrxml"));
-
-        JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
-
+        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(this.getClass().getResourceAsStream("/lk/ijse/dep/pos/report/bean-report.jasper"));
         Map<String, Object> params = new HashMap<>();
-        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport,
-                params, new JRBeanCollectionDataSource(tblCustomers.getItems()));
-
-        JasperViewer.viewReport(jasperPrint);
+        Session session = HibernateUtil.getSessionFactory().openSession();
+        session.doWork(connection -> {
+            JasperPrint jasperPrint = null;
+            try {
+                jasperPrint = JasperFillManager.fillReport(jasperReport, params, connection);
+            } catch (JRException e) {
+                e.printStackTrace();
+            }
+            JasperViewer.viewReport(jasperPrint, false);
+        });
     }
 
     @FXML

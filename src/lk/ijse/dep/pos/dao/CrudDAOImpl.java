@@ -24,7 +24,7 @@ public abstract   class CrudDAOImpl <T extends SuperEntity, ID extends Serializa
 
     @Override
     public List<T> findAll() throws Exception {
-      return session.createQuery("FROM"+entity.getName()).list();
+      return session.createQuery("FROM "+entity.getName()).list();
     }
 
     @Override
