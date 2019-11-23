@@ -343,9 +343,9 @@ public class PlaceOrderFormController {
         OrderDTO order = new OrderDTO(orderId, null, cmbCustomerId.getSelectionModel().getSelectedItem(), orderDetails);
         try {
             orderBO.placeOrder(order);
-            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(this.getClass().getResourceAsStream("/lk/ijse/dep/pos/report/order-report.jasper"));
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(this.getClass().getResourceAsStream("/lk/ijse/dep/pos/report/placeOrder.jasper"));
             Map<String, Object> params = new HashMap<>();
-            params.put("orderId", orderId + "");
+            params.put("ID", orderId+"");
             Session session = HibernateUtil.getSessionFactory().openSession();
             session.doWork(connection -> {
                 JasperPrint jasperPrint = null;
