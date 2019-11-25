@@ -7,11 +7,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 import lk.ijse.dep.pos.db.HibernateUtil;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.net.URL;
 import java.util.logging.*;
 
 public class AppInitializer extends Application {
+
+    public static AnnotationConfigApplicationContext ctx;
 
     public static void main(String[] args)
     {
@@ -22,6 +25,10 @@ public class AppInitializer extends Application {
     @Override
     public void start(Stage primaryStage)  {
         try {
+
+            ctx = new AnnotationConfigApplicationContext();
+            ctx.register(AppConfig.class);
+            ctx.refresh();
 
             // Let's setup the root logger
             Logger rootLogger = Logger.getLogger("");
