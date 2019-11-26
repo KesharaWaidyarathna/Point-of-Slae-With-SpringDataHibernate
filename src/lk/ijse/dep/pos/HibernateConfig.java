@@ -1,8 +1,12 @@
 package lk.ijse.dep.pos;
 
+import lk.ijse.deppo.crypto.DEPCrypt;
 import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
@@ -14,7 +18,11 @@ import java.util.Properties;
 
 @Configuration
 @EnableTransactionManagement
+@PropertySource("file:${user.dir}\\resources\\application.properties")
 public class HibernateConfig {
+
+    @Autowired
+    private Environment env;
 
     @Bean
     public LocalSessionFactoryBean sessionFactory(DataSource dataSource){
@@ -28,19 +36,19 @@ public class HibernateConfig {
     @Bean
     public DataSource dataSource(){
         DriverManagerDataSource ds = new DriverManagerDataSource();
-        ds.setDriverClassName("com.mysql.jdbc.Driver");
-        ds.setUrl("jdbc:mysql://localhost:3306/LayerPOSHib?createDatabaseIfNotExist=true");
-        ds.setUsername("root");
-        ds.setPassword("mysql");
+        ds.setDriverClassName(env.getRequiredProperty("hibernate.connection.driver_class"));
+        ds.setUrl(env.getProperty("hibernate.connection.url"));
+        ds.setUsername(DEPCrypt.decode(env.getProperty("hibernate.connection.username"),"dep4"));
+        ds.setPassword(DEPCrypt.decode(env.getProperty("hibernate.connection.password"),"dep4"));
         return ds;
     }
 
     public Properties hibernateProperties(){
         Properties properties = new Properties();
-        properties.put("hibernate.dialect","org.hibernate.dialect.MySQL57Dialect");
-        properties.put("hibernate.show_sql",true);
-        properties.put("hibernate.hbm2ddl.auto","update");
-        properties.put("hibernate.allow_refresh_detached_entity",false);
+        properties.put("hibernate.dialect",env.getProperty("hibernate.dialect"));
+        properties.put("hibernate.show_sql",env.getProperty("hibernate.show_sql"));
+        properties.put("hibernate.hbm2ddl.auto",env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.put("hibernate.allow_refresh_detached_entity",env.getProperty("hibernate.allow_refresh_detached_entity"));
         return properties;
     }
 
