@@ -16,12 +16,12 @@ public class OrderDetailDAOImpl extends CrudDAOImpl<OrderDetail,OrderDetailPK> i
     @Override
     public List<OrderDetail> findAll() throws Exception {
 
-        return  session.createQuery("From OrderDetail",OrderDetail.class).list();
+        return  getSession().createQuery("From OrderDetail",OrderDetail.class).list();
     }
 
     @Override
     public boolean existsByItemCode(String itemCode) throws Exception {
-       return session.createNativeQuery("SELECT * FROM OrderDetail WHERE itemCode=?1").setParameter(1,itemCode).uniqueResult()!=null;
+       return getSession().createNativeQuery("SELECT * FROM OrderDetail WHERE itemCode=?1").setParameter(1,itemCode).uniqueResult()!=null;
 
     }
 }
