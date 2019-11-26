@@ -348,13 +348,13 @@ public class PlaceOrderFormController {
             SessionFactory s = AppInitializer.ctx.getBean(SessionFactory.class);
             Session session = s.openSession();
             session.doWork(connection -> {
-                JasperPrint jasperPrint = null;
-                try {
-                    jasperPrint = JasperFillManager.fillReport(jasperReport, params, connection);
-                } catch (JRException e) {
-                    e.printStackTrace();
-                }
-                JasperViewer.viewReport(jasperPrint, false);
+//                JasperPrint jasperPrint = null;
+//                try {
+//                    jasperPrint = JasperFillManager.fillReport(jasperReport, params, connection);
+//                } catch (JRException e) {
+//                    e.printStackTrace();
+//                }
+//                JasperViewer.viewReport(jasperPrint, false);
             });
 
         } catch (Exception e) {
