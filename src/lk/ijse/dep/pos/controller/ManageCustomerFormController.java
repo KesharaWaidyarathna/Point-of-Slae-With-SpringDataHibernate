@@ -8,7 +8,6 @@ package lk.ijse.dep.pos.controller;
 import lk.ijse.dep.pos.AppInitializer;
 import lk.ijse.dep.pos.business.custom.CustomerBO;
 import lk.ijse.dep.pos.business.exception.AlreadyExistsInOrderException;
-import lk.ijse.dep.pos.db.HibernateUtil;
 import lk.ijse.dep.pos.dto.CustomerDTO;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -29,6 +28,7 @@ import net.sf.jasperreports.engine.util.JRLoader;
 import net.sf.jasperreports.view.JasperViewer;
 import lk.ijse.dep.pos.util.CustomerTM;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 import java.io.IOException;
 import java.net.URL;
@@ -110,7 +110,8 @@ public class ManageCustomerFormController implements Initializable {
     public void btnReport_OnAction(ActionEvent actionEvent) throws JRException {
         JasperReport jasperReport = (JasperReport) JRLoader.loadObject(this.getClass().getResourceAsStream("/lk/ijse/dep/pos/report/bean-report.jasper"));
         Map<String, Object> params = new HashMap<>();
-        Session session = HibernateUtil.getSessionFactory().openSession();
+        SessionFactory sessionFactory = AppInitializer.ctx.getBean(SessionFactory.class);
+        Session session = sessionFactory.openSession();
         session.doWork(connection -> {
             JasperPrint jasperPrint = null;
             try {
