@@ -379,13 +379,6 @@ public class PlaceOrderFormController {
         primaryStage.centerOnScreen();
     }
 
-/*    public void txtQty_OnKeyPressed(KeyEvent keyEvent) {
-        if (keyEvent.getCode() == KeyCode.ENTER){
-            if (!btnSave.isDisable()){
-                btnAdd_OnAction(null);
-            }
-        }
-    }*/
 
     public void txtQty_OnAction(ActionEvent actionEvent) {
         if (!btnSave.isDisable()) {
@@ -402,56 +395,4 @@ public class PlaceOrderFormController {
             btnPlaceOrder.setDisable(false);
         }
     }
-
-/*
-    public void initializeForSearchOrderForm(String orderId) {
-
-        // Let's disable a few
-        btnPlaceOrder.setDisable(true);
-        btnSave.setDisable(true);
-        btnAddNewOrder.setDisable(true);
-        cmbCustomerId.setDisable(true);
-        cmbItemCode.setDisable(true);
-        txtQty.setDisable(true);
-
-        // Let's set read only flag to true
-        readOnly = true;
-
-        lblId.setText(orderId);
-
-        // Let's find the order
-        for (Order order : DB.orders) {
-            if (order.getOrderId().equals(orderId)) {
-
-                // Setting the order date
-                lblDate.setText(order.getOrderDate() + "");
-                // Setting the customer id, this will automatically set the customer name because we have already set a
-                // listener
-                cmbCustomerId.getSelectionModel().select(order.getCustomerId());
-
-                ObservableList<OrderDetailTM> orderDetails = tblOrderDetails.getItems();
-
-                for (OrderDetail od : order.getOrderDetails()) {
-
-                    // Let's find the item description
-                    String itemDescription = null;
-                    for (ItemTM item : DB.items) {
-                        if (item.getCode().equals(od.getItemCode())) {
-                            itemDescription = item.getDescription();
-                            break;
-                        }
-                    }
-                    orderDetails.add(new OrderDetailTM(od.getItemCode(), itemDescription,
-                            od.getQty(), od.getUnitPrice(),
-                            od.getQty() * od.getUnitPrice(), null));
-                }
-                calculateTotal();
-                tblOrderDetails.getSelectionModel().select(0);
-                break;
-            }
-        }
-*/
-    //============================ DB Related Codes =================================
-
-
 }
